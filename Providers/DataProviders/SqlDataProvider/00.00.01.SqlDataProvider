@@ -1,0 +1,29 @@
+﻿/************************************************************/
+/*****              SqlDataProvider                     *****/
+/*****                                                  *****/
+/*****                                                  *****/
+/***** Note: To manually execute this script you must   *****/
+/*****       perform a search and replace operation     *****/
+/*****       for {databaseOwner} and {objectQualifier}  *****/
+/*****                                                  *****/
+/************************************************************/
+
+IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{objectQualifier}CBP_Tasks]') and OBJECTPROPERTY(id, N'IsTable') = 1)
+
+BEGIN CREATE TABLE {databaseOwner}[{objectQualifier}CBP_Tasks](
+[TaskID] [int] IDENTITY(1,1) NOT NULL,
+[TaskName] [nvarchar](max) NOT NULL,
+[TaskDescription] [nvarchar](max) NULL,
+[IsComplete] [bit] NOT NULL,
+[ModuleID] [int] NOT NULL,
+[UserID] [int] NOT NULL
+) 
+
+ALTER TABLE {databaseOwner}[{objectQualifier}CBP_Tasks] ADD CONSTRAINT [PK_{databaseOwner}{objectQualifier}CBP_Tasks] PRIMARY KEY CLUSTERED  ([TaskID])
+END
+
+GO
+
+/************************************************************/
+/*****              SqlDataProvider                     *****/
+/************************************************************/
