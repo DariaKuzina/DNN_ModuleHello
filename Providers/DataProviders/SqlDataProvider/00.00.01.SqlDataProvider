@@ -8,6 +8,7 @@
 /*****                                                  *****/
 /************************************************************/
 
+/*CREATE TABLES*/
 IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{objectQualifier}CBP_Tasks]') and OBJECTPROPERTY(id, N'IsTable') = 1)
 
 BEGIN CREATE TABLE {databaseOwner}[{objectQualifier}CBP_Tasks](
@@ -22,6 +23,54 @@ BEGIN CREATE TABLE {databaseOwner}[{objectQualifier}CBP_Tasks](
 ALTER TABLE {databaseOwner}[{objectQualifier}CBP_Tasks] ADD CONSTRAINT [PK_{databaseOwner}{objectQualifier}CBP_Tasks] PRIMARY KEY CLUSTERED  ([TaskID])
 END
 
+GO
+
+/*CREATE STORED PROCEDURES*/
+
+IF EXISTS (select * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{objectQualifier}CBP_GetTasks]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+    DROP PROCEDURE {databaseOwner}[{objectQualifier}CBP_GetTasks]
+GO
+
+CREATE PROCEDURE {databaseOwner}[{objectQualifier}CBP_GetTasks]
+	@ModuleID int
+AS
+SELECT TaskID,
+    TaskName,
+    TaskDescription,
+    IsComplete,
+    ModuleId,
+    UserID
+FROM {databaseOwner}[{objectQualifier}CBP_Tasks]
+WHERE ModuleID=@ModuleID
+GO
+
+IF EXISTS (select * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{objectQualifier}CBP_AddTask]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+    DROP PROCEDURE {databaseOwner}[{objectQualifier}CBP_AddTask]
+GO
+
+CREATE PROCEDURE {databaseOwner}[{objectQualifier}CBP_AddTask]
+    @TaskName nvarchar(max),
+    @TaskDescription nvarchar(max),
+    @IsComplete bit,
+    @ModuleID int,
+    @UserID int
+AS
+    INSERT INTO {databaseOwner}[{objectQualifier}CBP_Tasks](
+        TaskName,
+        TaskDescription,
+        IsComplete,
+        ModuleID,
+        UserID
+    )
+
+VALUES (
+        @TaskName,
+        @TaskDescription,
+        @IsComplete,
+        @ModuleID,
+        @UserID
+    )
+SELECT @@IDENTITY
 GO
 
 /************************************************************/
