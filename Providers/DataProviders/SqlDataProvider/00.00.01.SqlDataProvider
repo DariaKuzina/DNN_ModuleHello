@@ -73,6 +73,25 @@ VALUES (
 SELECT @@IDENTITY
 GO
 
+IF EXISTS (select * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{objectQualifier}CBP_UpdateTask]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+DROP PROCEDURE {databaseOwner}{objectQualifier}CBP_UpdateTask
+GO        
+ CREATE PROCEDURE {databaseOwner}{objectQualifier}CBP_UpdateTask
+            @TaskID int,
+            @TaskName nvarchar(max),
+            @TaskDescription nvarchar(max),
+            @IsComplete bit
+ AS
+ UPDATE {databaseOwner}[{objectQualifier}CBP_Tasks]
+ SET
+            TaskName = @TaskName,
+            TaskDescription = @TaskDescription,
+            IsComplete = @IsComplete       
+
+ WHERE TaskID = @TaskID
+ SELECT @TaskID
+ GO
+
 /************************************************************/
 /*****              SqlDataProvider                     *****/
 /************************************************************/

@@ -57,5 +57,29 @@ namespace Christoc.Modules.MyFirstModule.Models
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
             }
         }
+
+        [DnnModuleAuthorize(AccessLevel = SecurityAccessLevel.View)]
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public HttpResponseMessage UpdateTask(TaskToUpdateDTO DTO)
+        {
+            try
+            {
+                var task = new Task()
+                {
+                    TaskName = DTO.TTU_TaskName,
+                    TaskDescription = DTO.TTU_TaskDescription,
+                    IsComplete = DTO.TTU_isComplete,
+                    TaskId = DTO.TTU_TaskID
+                };
+                TaskLogic tl = new TaskLogic();
+                tl.UpdateTask(task);
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception exc)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }
     }
 }

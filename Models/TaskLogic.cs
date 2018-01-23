@@ -18,8 +18,15 @@ namespace Christoc.Modules.MyFirstModule.Models
                                                       task.TaskDescription,
                                                       task.IsComplete,
                                                       task.ModuleId,
-                                                       task.UserId
-                                                        );
+                                                       task.UserId);
+        }
+        public void UpdateTask(Task task)
+        {
+            task.TaskId = DataProvider.Instance().ExecuteScalar<int>("CBP_UpdateTask",
+                                                                     task.TaskId,
+                                                                     task.TaskName,
+                                                                     task.TaskDescription,
+                                                                     task.IsComplete);
         }
     }
 }

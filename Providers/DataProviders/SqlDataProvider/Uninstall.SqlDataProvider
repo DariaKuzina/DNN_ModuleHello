@@ -25,6 +25,10 @@ IF EXISTS (select * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{
     DROP PROCEDURE {databaseOwner}[{objectQualifier}CBP_AddTask]
 GO
 
+IF EXISTS (select * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{objectQualifier}CBP_UpdateTask]') and                    OBJECTPROPERTY(id, N'IsProcedure') = 1)
+DROP PROCEDURE {databaseOwner}{objectQualifier}CBP_UpdateTask
+GO    
+
 /************************************************************/
 /*****              SqlDataProvider                     *****/
 /************************************************************/
