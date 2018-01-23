@@ -11,6 +11,8 @@ namespace Christoc.Modules.MyFirstModule.Models
 {
     public class TaskController : DnnApiController
     {
+        private TaskLogic _logicHandler = new TaskLogic();
+
         [AllowAnonymous]
         [HttpGet]
         public HttpResponseMessage HelloWorld()
@@ -24,13 +26,29 @@ namespace Christoc.Modules.MyFirstModule.Models
         {
             try
             {
-                var tasks = new TaskLogic().GetTasks(moduleId).ToJson();
+                var tasks = _logicHandler.GetTasks(moduleId).ToJson();
                 return Request.CreateResponse(HttpStatusCode.OK, tasks);
             }
             catch (Exception exc)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
             }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public HttpResponseMessage GetIncompleteTasks(int moduleId)
+        {
+            try
+            {
+                var tasks = _logicHandler.GetIncompleteTasks(moduleId).ToJson();
+                return Request.CreateResponse(HttpStatusCode.OK, tasks);
+            }
+            catch (Exception exc)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+
         }
 
         [DnnModuleAuthorize(AccessLevel = SecurityAccessLevel.View)]
@@ -48,8 +66,8 @@ namespace Christoc.Modules.MyFirstModule.Models
                     ModuleId = DTO.TTC_ModuleID,
                     UserId = DTO.TTC_UserId
                 };
-                TaskLogic tl = new TaskLogic();
-                tl.AddTask(task);
+
+                _logicHandler.AddTask(task);
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception exc)
@@ -72,8 +90,29 @@ namespace Christoc.Modules.MyFirstModule.Models
                     IsComplete = DTO.TTU_isComplete,
                     TaskId = DTO.TTU_TaskID
                 };
-                TaskLogic tl = new TaskLogic();
-                tl.UpdateTask(task);
+
+                _logicHandler.UpdateTask(task);
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception exc)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, exc);
+            }
+        }
+
+        [DnnModuleAuthorize(AccessLevel = SecurityAccessLevel.View)]
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public HttpResponseMessage DeleteTask(TaskToDeleteDTO DTO)
+        {
+            try
+            {
+                var task = new Task()
+                {
+                    TaskId = DTO.TTD_TaskID
+                };
+
+                _logicHandler.DeleteTask(task.TaskId);
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
             catch (Exception exc)

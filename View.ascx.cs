@@ -38,7 +38,12 @@ namespace Christoc.Modules.MyFirstModule
         {
             try
             {
+                if (!Settings.Contains("ShowCompletedTasks"))
+                {
+                    var module = new ModuleController();
+                    module.UpdateModuleSetting(ModuleId, "ShowCompletedTasks", "True");
 
+                }
             }
             catch (Exception exc) //Module failed to load
             {

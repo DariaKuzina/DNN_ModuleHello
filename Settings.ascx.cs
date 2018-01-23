@@ -39,7 +39,6 @@ namespace Christoc.Modules.MyFirstModule
     public partial class Settings : MyFirstModuleModuleSettingsBase
     {
         #region Base Method Implementations
-
         /// -----------------------------------------------------------------------------
         /// <summary>
         /// LoadSettings loads the settings from the Database and displays them
@@ -52,17 +51,11 @@ namespace Christoc.Modules.MyFirstModule
                 if (Page.IsPostBack == false)
                 {
                     //Check for existing settings and use those on this page
-                    //Settings["SettingName"]
-
-                    /* uncomment to load saved settings in the text boxes
-                    if(Settings.Contains("Setting1"))
-                        txtSetting1.Text = Settings["Setting1"].ToString();
-			
-                    if (Settings.Contains("Setting2"))
-                        txtSetting2.Text = Settings["Setting2"].ToString();
-
-                    */
-
+                    /* uncomment to load saved settings in the text boxes*/
+                    if (Settings.Contains("ShowCompletedTasks"))
+                    {
+                        ShowCompletedTasksSelector.SelectedValue = Settings["ShowCompletedTasks"].ToString();
+                    }
                 }
             }
             catch (Exception exc) //Module failed to load
@@ -70,7 +63,6 @@ namespace Christoc.Modules.MyFirstModule
                 Exceptions.ProcessModuleLoadException(this, exc);
             }
         }
-
         /// -----------------------------------------------------------------------------
         /// <summary>
         /// UpdateSettings saves the modified settings to the Database
@@ -81,22 +73,14 @@ namespace Christoc.Modules.MyFirstModule
             try
             {
                 var modules = new ModuleController();
-
-                //the following are two sample Module Settings, using the text boxes that are commented out in the ASCX file.
-                //module settings
-                //modules.UpdateModuleSetting(ModuleId, "Setting1", txtSetting1.Text);
-                //modules.UpdateModuleSetting(ModuleId, "Setting2", txtSetting2.Text);
-
-                //tab module settings
-                //modules.UpdateTabModuleSetting(TabModuleId, "Setting1",  txtSetting1.Text);
-                //modules.UpdateTabModuleSetting(TabModuleId, "Setting2",  txtSetting2.Text);
+                modules.UpdateModuleSetting(ModuleId, "ShowCompletedTasks", ShowCompletedTasksSelector.SelectedValue);
             }
-            catch (Exception exc) //Module failed to load
+            catch (Exception exc)
             {
                 Exceptions.ProcessModuleLoadException(this, exc);
             }
         }
-
         #endregion
+
     }
 }

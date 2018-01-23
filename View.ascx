@@ -25,9 +25,17 @@
 <script type="text/javascript">
     var moduleId = <%= ModuleId %>;
     var CurrentUserID = <%= UserId %>;
+    var ShowCompletedTasks = '<%= Settings["ShowCompletedTasks"].ToString() %>';
     function loadTasks() {
+
+        if (ShowCompletedTasks == "True") {
+            GetTasksVariableURL = "/DesktopModules/MyFirstModule/API/Task/GetTasks?moduleId=" + moduleId;    
+        }
+        else {
+            GetTasksVariableURL = "/DesktopModules/MyFirstModule/API/Task/GetIncompleteTasks?moduleId=" + moduleId;
+        }
         $.getJSON(
-        "/DesktopModules/MyFirstModule/API/Task/GetTasks?moduleId=" + moduleId,
+         GetTasksVariableURL,
          function (result) {
              $('.TaskList').html("");
              var parsedTaskJSONObject = jQuery.parseJSON(result);     
@@ -76,7 +84,8 @@
                  $('.TaskList').find('' + EditTaskDescriptionDiv + '').html('<input class="UpdatedTaskDescription" id="UpdatedTaskDescription' + EditClickedID +'" type="text" value="' + CurrentTaskDescription +'"/>');                 
                  //Append cancel and save options
                  $('.TaskList').find('' + EditListItemDiv + '').append('<div class="Cancel Cancel' + EditClickedID +'">Cancel</div>');
-                 $('.TaskList').find('' + EditListItemDiv + '').append('<div class="Save" id="' + EditClickedID +'">Save</div>');                 
+                 $('.TaskList').find('' + EditListItemDiv + '').append('<div class="Save" id="' + EditClickedID +'">Save</div>');    
+                 $('.TaskList').find('' + EditListItemDiv + '').append('<div class="Delete" id="' + EditClickedID +'">Delete</div>');
                  //When the cancel button is clicked then set the fields back to the original values then remove the save & cancel buttons
                  $('.Cancel').click(function() {
                      $('.TaskList').find('' + EditTaskCheckBox + '').prop('checked', CurrentTaskIsComplete);
@@ -115,6 +124,40 @@
                      });
                      $(this).remove();
                      $('.Cancel').remove();                 
+                 });
+                 $('.Delete').click(function() {
+                 
+                     var DeleteClickedID = $(this).attr('id');
+
+                     $.dnnConfirm({
+                         text: 'You sure you want to delete',
+                         yesText: 'Yep,delete',
+                         noText: 'Cancel',
+                         title: 'Delete Confirmation',
+                         callbackTrue: function() {
+                             deleteTask(DeleteClickedID);
+                             }
+                     });
+
+                     function deleteTask(DeleteClickedID) {
+                         var taskId = DeleteClickedID;
+                         var taskToDelete = {
+                             TTD_TaskID: taskId,
+                         };
+
+                         var sf = $.ServicesFramework(<%:ModuleContext.ModuleId%>);
+
+                         $.ajax({
+                             url: '/DesktopModules/MyFirstModule/API/Task/DeleteTask',
+                             type: "POST",
+                             contentType: "application/json",
+                             beforeSend: sf.setModuleHeaders,
+                             data: JSON.stringify(taskToDelete),
+                             success: function(data) {
+                                 loadTasks();
+                             }
+                         });   
+                     }             
                  });
              });    
          });

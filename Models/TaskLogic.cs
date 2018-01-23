@@ -28,5 +28,15 @@ namespace Christoc.Modules.MyFirstModule.Models
                                                                      task.TaskDescription,
                                                                      task.IsComplete);
         }
+
+        public void DeleteTask(int taskId)
+        {
+            DataProvider.Instance().ExecuteNonQuery("CBP_DeleteTask", taskId);
+        }
+
+        public IList<Task> GetIncompleteTasks(int ModuleId)
+        {
+            return CBO.FillCollection<Task>(DataProvider.Instance().ExecuteReader("CBP_GetIncompleteTasks", ModuleId));
+        }
     }
 }

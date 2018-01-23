@@ -92,6 +92,34 @@ GO
  SELECT @TaskID
  GO
 
+ IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{objectQualifier}CBP_DeleteTask]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+DROP PROCEDURE {databaseOwner}{objectQualifier}CBP_DeleteTask
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}CBP_DeleteTask
+     @TaskId         int
+AS
+DELETE FROM {databaseOwner}[{objectQualifier}CBP_Tasks]
+WHERE  TaskID = @TaskId
+GO
+
+IF EXISTS (select * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{objectQualifier}CBP_GetIncompleteTasks]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+    DROP PROCEDURE {databaseOwner}{objectQualifier}CBP_GetIncompleteTasks
+GO
+Create Procedure {databaseOwner}{objectQualifier}CBP_GetIncompleteTasks
+    @ModuleId int
+AS
+SELECT TaskId,
+        TaskName,
+    TaskDescription,
+    isComplete,
+    UserId,
+    ModuleId
+FROM {databaseOwner}[{objectQualifier}CBP_Tasks]
+WHERE ModuleId = @ModuleId AND isComplete = 0
+GO
+
+
 /************************************************************/
 /*****              SqlDataProvider                     *****/
 /************************************************************/

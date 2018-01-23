@@ -86,6 +86,7 @@
     <Compile Include="Models\TaskLogic.cs" />
     <Compile Include="Models\Task.cs" />
     <Compile Include="Models\TaskToCreateDTO.cs" />
+    <Compile Include="Models\TaskToDeleteDTO.cs" />
     <Compile Include="Models\TaskToUpdateDTO.cs" />
     <Compile Include="MyFirstModuleModuleBase.cs">
       <SubType>ASPXCodeBehind</SubType>

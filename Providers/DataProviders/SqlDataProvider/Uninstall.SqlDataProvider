@@ -29,6 +29,14 @@ IF EXISTS (select * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{
 DROP PROCEDURE {databaseOwner}{objectQualifier}CBP_UpdateTask
 GO    
 
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{objectQualifier}CBP_DeleteTask]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+DROP PROCEDURE {databaseOwner}{objectQualifier}CBP_DeleteTask
+GO
+
+IF EXISTS (select * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{objectQualifier}CBP_GetIncompleteTasks]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+DROP PROCEDURE {databaseOwner}{objectQualifier}CBP_GetIncompleteTasks
+GO
+
 /************************************************************/
 /*****              SqlDataProvider                     *****/
 /************************************************************/
